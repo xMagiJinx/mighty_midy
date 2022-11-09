@@ -1,5 +1,6 @@
 import pygame
 import sys
+from ship import Ship
 
 TILE_SIZE = 64
 WINDOW_SIZE = 15 * TILE_SIZE
@@ -16,7 +17,7 @@ island_tl = pygame.image.load("assets/island_tl.png")
 island_br = pygame.image.load("assets/island_br.png")
 island_bl = pygame.image.load("assets/island_bl.png")
 # add a ship
-ship = pygame.image.load("assets/ship.png")
+ship = Ship()  # ship is now an object that *has* a surface
 
 num_tiles = screen_rect.width // water_rect.width
 
@@ -46,9 +47,10 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
 
+    # update game objects
+    ship.move(coordinate)
+
     # draw the screen
     draw_background()
-    ship_rect = ship.get_rect()
-    ship_rect.center = coordinate
-    screen.blit(ship, ship_rect)
+    ship.draw(screen)
     pygame.display.flip()
