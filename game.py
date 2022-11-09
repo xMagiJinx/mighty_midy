@@ -1,6 +1,7 @@
 import pygame
 import sys
 from ship import Ship
+from island import Island
 
 TILE_SIZE = 64
 WINDOW_SIZE = 15 * TILE_SIZE
@@ -12,10 +13,8 @@ water_rect = water.get_rect()
 screen_rect = screen.get_rect()
 
 # add an island
-island_tr = pygame.image.load("assets/island_tr.png")
-island_tl = pygame.image.load("assets/island_tl.png")
-island_br = pygame.image.load("assets/island_br.png")
-island_bl = pygame.image.load("assets/island_bl.png")
+island = Island()
+island.move((450, 450))
 # add a ship
 ship = Ship()  # ship is now an object that *has* a surface
 
@@ -28,15 +27,12 @@ def draw_background():
         for x in range(num_tiles):
             screen.blit(water, (x * water_rect.width, y * water_rect.height))
 
-    screen.blit(island_tl, (450, 450))
-    screen.blit(island_tr, (450 + 64, 450))
-    screen.blit(island_bl, (450, 450 + 64))
-    screen.blit(island_br, (450 + 64, 450 + 64))
-
 
 coordinate = (0, 0)
 
+clock = pygame.time.Clock()
 while True:
+
     # 1 check for user input (key press, mouse clicks,joystick)
     for event in pygame.event.get():
         if event.type == pygame.MOUSEMOTION:
@@ -49,8 +45,14 @@ while True:
 
     # update game objects
     ship.move(coordinate)
+    collision = pygame.sprite.collide_rect(ship, island)
+    if collision:
+        ship.health = ship.health - 1
+        print(f"Collision: ship health={ship.health}!!")
 
     # draw the screen
     draw_background()
+    island.draw(screen)
     ship.draw(screen)
     pygame.display.flip()
+    clock.tick(60)
