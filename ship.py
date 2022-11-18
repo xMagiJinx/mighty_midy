@@ -1,9 +1,10 @@
 import pygame
+from pygame.sprite import Sprite
 
-
-class Ship:
+class Ship(Sprite):
 
     def __init__(self):
+        super().__init__()
         self.healthy_image = pygame.image.load("assets/ship.png")
         self.light_damage_image = pygame.image.load("assets/ship_light_damage.png")
         self.heavy_damage_image = pygame.image.load("assets/ship_heavy_damage.png")
@@ -16,9 +17,8 @@ class Ship:
     def move(self, coordinate):
         self.rect.center = coordinate
 
-    def draw(self, surface):
+    def update(self):
         if self.health < 60:
             self.image = self.light_damage_image
         if self.health < 30:
             self.image = self.heavy_damage_image
-        surface.blit(self.image, self.rect)

@@ -4,7 +4,7 @@ from pygame.sprite import Sprite
 
 class Island(Sprite):
 
-    def __init__(self):
+    def __init__(self, position):
         super().__init__()
         self.image = pygame.surface.Surface((128, 128))
         self.image.blit(pygame.image.load("assets/water_tile.png"),
@@ -27,9 +27,7 @@ class Island(Sprite):
         self.image.blit(pygame.image.load("assets/island_br.png"),
                         (64, 64))
         self.rect = self.image.get_rect()
-
-    def move(self, coordinate):
-        self.rect.center = coordinate
+        self.rect.center = position
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
