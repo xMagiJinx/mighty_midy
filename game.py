@@ -3,6 +3,9 @@ import sys
 from ship import Ship
 from island import Island
 
+# NEW: import serial library, install pyserial first
+import serial
+########################
 TILE_SIZE = 64
 WINDOW_SIZE = 15 * TILE_SIZE
 pygame.init()
@@ -31,17 +34,27 @@ for y in range(num_tiles):
     for x in range(num_tiles):
         background.blit(water, (x * water_rect.width, y * water_rect.height))
 
+# NEW: add serial connection to PICO
+pico = serial.Serial("COM11")
+####################################
 
 coordinate = (0, 0)
 
 clock = pygame.time.Clock()
 while True:
 
-    # 1 check for user input (key press, mouse clicks,joystick)
+    ###############################################
+    #  NEW: check serial for new ship coordinate
+    pico.write("\n".encode())
+    x, y = pico.readline().strip().decode().split(',')
+    if (x, y) != ('-1', '-1'):
+        x_coord = int(int(x) / 316 * WINDOW_SIZE)
+        y_coord = int(int(y) / 208 * WINDOW_SIZE)
+        coordinate = x_coord, y_coord
+    ###############################################
+
+    # check for user input (key press, mouse clicks,joystick)
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEMOTION:
-            coordinate = pygame.mouse.get_pos()
-            # draw a ship at the x,y coordinate of the mouse
         if event.type == pygame.MOUSEBUTTONDOWN:
             print("BOOM!")
         if event.type == pygame.QUIT:
@@ -53,10 +66,10 @@ while True:
     collision = pygame.sprite.collide_rect(ship, island)
     if collision:
         ship.health = ship.health - 1
-        #print(f"Collision: ship health={ship.health}!!")
+        # print(f"Collision: ship health={ship.health}!!")
 
     # draw the screen
-    screen.blit(background, (0,0))
+    screen.blit(background, (0, 0))
     game_objects.draw(screen)
     pygame.display.flip()
-    print(clock.tick(60))
+    clock.tick(60)
