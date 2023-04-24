@@ -4,7 +4,7 @@ import usb_cdc
 camera = PixyCam()
 
 while True:
-    # wait for data from
+    # wait for data from serial, stalls at line 8
     usb_cdc.data.readline()
     blocks = camera.getBlocks(1)
     if len(blocks) == 0:
