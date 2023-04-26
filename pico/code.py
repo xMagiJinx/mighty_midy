@@ -12,4 +12,4 @@ while True:
     else:
         block = blocks[0]
         msg = f"{block.x},{block.y}\n"
-    usb_cdc.data.write(msg)
+    usb_cdc.data.write(msg.encode())
