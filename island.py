@@ -29,5 +29,8 @@ class Island(Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = position
 
+    def move(self, coordinate):
+        self.rect.center = coordinate
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
