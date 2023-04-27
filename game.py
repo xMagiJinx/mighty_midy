@@ -20,9 +20,10 @@ island = Island(screen_rect.center)
 
 # add a ship
 ship = Ship()  # ship is now an object that *has* a surface
+ship2 = Ship()
 
 game_objects = pygame.sprite.Group()
-game_objects.add(island, ship)
+game_objects.add(island, ship, ship2)
 
 num_tiles = screen_rect.width // water_rect.width
 
@@ -46,12 +47,19 @@ while True:
     ###############################################
     #  NEW: check serial for new ship coordinate
     pico.write("\n".encode())
-    x, y = pico.readline().strip().decode().split(',')
-    if (x, y) != ('-1', '-1'):
-        x_coord = int(int(x) / 316 * WINDOW_SIZE)
-        y_coord = int(int(y) / 208 * WINDOW_SIZE)
+
+    x1, y1, x2, y2 = pico.readline().strip().decode().split(',')
+    if (x1, y1) != ('-1', '-1'):
+        x_coord = int(int(x1) / 316 * WINDOW_SIZE)
+        y_coord = int(int(y1) / 208 * WINDOW_SIZE)
         coordinate = x_coord, y_coord
-    ###############################################
+
+    if (x2, y2) != ('-2', '-2'):
+        x2_coord = int(int(x2) / 316 * WINDOW_SIZE)
+        y2_coord = int(int(y2) / 208 * WINDOW_SIZE)
+        coordinate2 = x2_coord, y2_coord
+    ############################################### 
+
 
     # check for user input (key press, mouse clicks,joystick)
     for event in pygame.event.get():
@@ -70,6 +78,9 @@ while True:
     if collision:
         ship.health = ship.health - 1
         # print(f"Collision: ship health={ship.health}!!")
+
+    ship2.move(coordinate2)
+    game_objects.update()
 
     # draw the screen
     screen.blit(background, (0, 0))
